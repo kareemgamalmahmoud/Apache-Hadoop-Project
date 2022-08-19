@@ -1,0 +1,108 @@
+-- ============================================ task 1 ==============================================================
+
+create table if not exists employee_data_hive (Name string, Job_Titles string, Department string, Full_or_Part_Time String, Salary_or_Hourly String, Typical_Hours int, Annual_Salary int, Hourly_Rate float) row format delimited fields terminated by ',';
+load data local inpath '/home/osboxes/project/New_folder/employee-data.csv' OVERWRITE into table employee_data_hive;
+select * from employee_data_hive limit 10 ;
+
+-- ============================================ task 2 ==============================================================
+
+create table if not exists  department_data_hive  as
+select dept_name , row_number()  over() as deptid from 
+(select  DISTINCT Department as dept_name from employee_data_hive) as main;
+
+select * from department_data_hive ;
+
+desc department_data_hive;
+
+-- ============================================ task 3 ==============================================================
+
+insert overwrite table employee_data_hive
+select Name , Job_Titles , deptid , Full_or_Part_Time , Salary_or_Hourly , Typical_Hours , Annual_Salary , Hourly_Rate 
+from employee_data_hive  left join department_data_hive 
+on  employee_data_hive.Department  = department_data_hive.dept_name;
+
+
+select * from employee_data_hive limit 10 ;
+
+select Department from employee_data_hive limit 10 ;
+
+
+
+insert overwrite table employee_data_hive
+select Name , Job_Titles , department , Full_or_Part_Time , Salary_or_Hourly , Typical_Hours ,  
+case 
+when Annual_Salary is NULL then (Typical_Hours * Hourly_Rate * 52 )
+else Annual_Salary 
+end as Annual_Salary, Hourly_Rate
+from employee_data_hive;
+
+
+select Annual_Salary from employee_data_hive where Annual_Salary is NULL;
+
+-- ============================================ task 4 ==============================================================
+
+select  * from employee_data_hive where Annual_Salary > 100000;
+
+select dept.dept_name , AVG(emp.Annual_Salary) as AVG_Salary from employee_data_hive emp join department_data_hive dept 
+on emp.department = dept.deptid
+GROUP BY dept.dept_name;
+
+-- ============================================ task 5 
+==============================================================
+
+create table if not exists  employees_ptn (department string, Name string, Job_Titles string, Full_or_Part_Time string, Salary_or_Hourly String, Typical_Hours int, Annual_Salary int, Hourly_Rate float) 
+PARTITIONED BY (departid string);
+
+
+set hive.exec.dynamic.partition.mode = nonstrict;
+set hive.exec.dynamic.partition = true;
+
+
+from employee_data_hive emp
+
+insert overwrite table employees_ptn 
+PARTITION (departid = '1')
+select department, Name, Job_Titles, Full_or_Part_Time , Salary_or_Hourly, Typical_Hours, Annual_Salary, Hourly_Rate  where emp.department = '1'
+
+insert overwrite table employees_ptn 
+PARTITION (departid = '2')
+select department, Name, Job_Titles, Full_or_Part_Time , Salary_or_Hourly, Typical_Hours, Annual_Salary, Hourly_Rate  where emp.department = '2'
+
+insert overwrite table employees_ptn 
+PARTITION (departid = '3')
+select department, Name, Job_Titles, Full_or_Part_Time , Salary_or_Hourly, Typical_Hours, Annual_Salary, Hourly_Rate  where emp.department = '3'
+
+insert overwrite table employees_ptn 
+PARTITION (departid = '4')
+select department, Name, Job_Titles, Full_or_Part_Time , Salary_or_Hourly, Typical_Hours, Annual_Salary, Hourly_Rate  where emp.department = '4'
+
+insert overwrite table employees_ptn 
+PARTITION (departid = '5')
+select department, Name, Job_Titles, Full_or_Part_Time , Salary_or_Hourly, Typical_Hours, Annual_Salary, Hourly_Rate  where emp.department = '5';
+
+
+
+
+show partitions employees_ptn;
+
+-- hdfs dfs -cat /user/hive/warehouse/employees_ptn/departid=1/000000_0
+-- hdfs dfs -cat /user/hive/warehouse/employees_ptn/departid=2/000000_0
+-- hdfs dfs -cat /user/hive/warehouse/employees_ptn/departid=3/000000_0
+-- hdfs dfs -cat /user/hive/warehouse/employees_ptn/departid=4/000000_0
+-- hdfs dfs -cat /user/hive/warehouse/employees_ptn/departid=5/000000_0
+
+-- ============================================ task 6 in spark ==============================================================
+
+--val path = "/user/osboxes/project/employee-data.csv"
+--val employees_data = spark.option("header" , "true").csv(path)
+--employees_data.show(10)
+--employees_data.count()
+--employees_data.columns.length
+
+
+ 
+
+
+
+
+
