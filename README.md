@@ -15,7 +15,6 @@ Hourly Rate) as columns names.
 employee-data-hive,
 and adding a column named deptID in the new department-data-hive table,
 and put unique values in the deptID column.
-
 Alternatively, you can pre-process the employee-data
 and select the unique department names, add DeptID column and assign unique value in the new Colum using excel or mySQL database separately,
 and then consider this structure (depart-name, DeptID) to create the departmentdata-hive table.
