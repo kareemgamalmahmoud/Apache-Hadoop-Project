@@ -20,12 +20,12 @@ Alternatively, you can pre-process the employee-data
 and select the unique department names, add DeptID column and assign unique value in the new Colum using excel or mySQL database separately,
 and then consider this structure (depart-name, DeptID) to create the departmentdata-hive table.
 
-3)Update the employee-data-hive table by replacing the department field data with the
+3) Update the employee-data-hive table by replacing the department field data with the
 deptID values as created in the department-data-hive table.
 Also update the employee-data-hive table 'annual salary' field based on the 'Typical
 Hours' * 'Hourly Rate' * 52 if the annual salary field is empty.
 
-4)Display all employees list with salary more than $100,000 based on employee-datahive table.
+4) Display all employees list with salary more than $100,000 based on employee-datahive table.
 Also join the ‘employee-data-hive’ and ‘department-data-hive’ table to show the
 average salary of employees by department name.
 
