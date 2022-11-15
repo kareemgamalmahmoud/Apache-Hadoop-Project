@@ -1,0 +1,8 @@
+(Who,1)
+(Why,2)
+(What,3)
+(When,1)
+(Whom,1)
+(Where,1)
+(Which,1)
+(Whose,2)

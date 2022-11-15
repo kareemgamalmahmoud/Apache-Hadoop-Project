@@ -1,0 +1,8 @@
+What	3
+When	1
+Where	1
+Which	1
+Who	1
+Whom	1
+Whose	2
+Why	2
